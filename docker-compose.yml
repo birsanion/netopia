@@ -1,0 +1,48 @@
+services:
+  rabbitmq:
+    image: rabbitmq:4.0.9-management
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+  db:
+    image: mysql
+    restart: on-failure
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: secret
+      MYSQL_DATABASE: netopia
+  api-netopia:
+    image: api-netopia
+    build:
+      context: api-server
+      dockerfile: ./Dockerfile
+    ports:
+      - "8888:8888"
+    environment:
+      - DB_HOST=tcp(db:3306)
+      - DB_USER=root
+      - DB_PASSWORD=secret
+      - DB_NAME=netopia
+      - DB_DEBUG=1
+      - RABBIT_MQ_URL=amqp://guest:guest@rabbitmq:5672/
+    depends_on:
+      - rabbitmq
+      - db
+    restart: on-failure
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - "9000:8080"
+    environment:
+      ADMINER_DESIGN: "mvt"
+      ADMINER_DEFAULT_SERVER: "db"
+  swagger:
+    image: swaggerapi/swagger-ui
+    ports:
+      - "8070:8080"
+    volumes:
+      - ./docs/swagger.yml:/api.yml
+    environment:
+      SWAGGER_JSON: /api.yml

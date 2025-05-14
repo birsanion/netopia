@@ -1,0 +1,5 @@
+export DB_HOST="tcp(localhost:3306)"
+export DB_USER="root"
+export DB_PASSWORD="secret"
+export DB_NAME="netopia"
+export RABBIT_MQ_URL="amqp://guest:guest@localhost:5672/"

@@ -1,0 +1,109 @@
+openapi: 3.0.3
+info:
+  description: "The webservices for internal (trusted) use"
+  version: "1.0.0"
+  title: "Netopia Internal API"
+servers:
+  - url: "http://localhost:8888"
+    description: "Development API domain"
+
+components:
+  parameters:
+    Authorization:
+      in: "header"
+      name: "X-API-Key"
+      schema:
+        type: string
+      description: "Api key"
+      default: 896me27risv1r3ndp5bs074ccjacmsdc
+      required: true
+  schemas:
+    ApiErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+    InitPaymentResponse:
+      type: object
+      properties:
+        transaction_id:
+          type: string
+        status:
+          type: string
+    HealthResponse:
+      type: object
+      properties:
+        status:
+          type: string
+        details:
+          type: string
+
+paths:
+  /health:
+    get:
+      summary: "Healthcheck endpoint"
+      responses:
+        "200":
+          description: "successful operation"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthResponse'
+  /payments:
+    post:
+      summary: "Init payment endpoint"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                amount:
+                  type: number
+                  default: 20
+                currency:
+                  type: string
+                  default: "RON"
+                iban:
+                  type: string
+                  default: RO42RZBR8961828279558461
+                internal_reference:
+                  type: string
+                  default: NTP213141
+                description:
+                  type: string
+                  default: Transfer bancar
+              required:
+                - amount
+                - currency
+                - iban
+                - internal_reference
+                - description
+
+      parameters:
+        - $ref: '#/components/parameters/Authorization'
+      responses:
+        "200":
+          description: "successful operation"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InitPaymentResponse'
+        "400":
+          description: "bad request"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+        "401":
+          description: "unauthorized"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+        "500":
+          description: "server error"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
