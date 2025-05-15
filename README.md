@@ -1,9 +1,11 @@
-# Netopia project
+# Netopia App
 
 Aplicația curentă include:
 - endpoint-ul **/payments** primește un request HTTP cu un payload pentru inițierea unei plăți, îl salveaza într-o baza de date MySQL și trimite un mesaj într-o coadă RabbitMQ
-- endpoint-ul **/health** verifică dacă aplicația rulează
+- endpoint-ul **/health** verifică dacă aplicația rulează, împreună cu un test unit simplu pentru acesta
 - endpoint-ul **/metrics** oferă date despre performanța, utilizarea sau starea internă a aplicației (integrat cu **Prometheus**)
+
+
 
 ## Instrucțiuni pentru rularea aplicației local
 
